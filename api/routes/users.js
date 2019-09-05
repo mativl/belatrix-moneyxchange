@@ -1,10 +1,6 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { userService } = require("../services");
-const catchException = require("../middlewares/catchExceptions");
 const checkAuth = require("../middlewares/check-auth");
-const ErrorWithStatusCode = require("../errors/ErrorWithStatusCode");
+const UserController = require("../controllers/userController");
 
 const router = express.Router();
 
@@ -18,94 +14,26 @@ const router = express.Router();
 router.get(
   "/",
   checkAuth,
-  catchException(async (req, res) => {
-    let { offset, limit, fields } = req.query;
-    offset = parseInt(offset);
-    limit = parseInt(limit);
-    limit =  Math.min(limit,50);
-    fields = fields ? fields.split(",") : undefined;
-    const users = await userService.listUsers(offset, limit, fields);
-    res.json(users);
-  })
+  UserController.user_get_all
 );
 
 router.get(
   "/:userId",
   checkAuth,
-  catchException(async (req, res) => {
-    const { userId } = req.params;
-    const user = await userService.getUser(userId);
-    if (user) {
-      res.json(user);
-    } else{
-      res.status(404).json({ message: 'No se encontro un usuario con ese ID' });
-    }
-  })
+  UserController.user_get_by_id
 );
 
 // POST
 
 router.post(
   "/signup",
-  catchException(async (req, res) => {
-    const { email, password } = req.body;
-    // Chequeo si el usuario existe antes de continuar
-    const userExist = await userService.checkIfUserExist(email);
-    // Si no existe === []
-    if (userExist.length > 0) {
-      return res.status(409).json({ message: 'Email en uso' });
-    }
-
-    bcrypt.hash(password, 10, async (err, hash) => {
-      if (err) {
-        return res.status(500).json({
-          error: err
-        });
-      } else {
-        const user = await userService.createUser(email, hash);
-        res.json({
-          message: "Usuario creado exitosamente",
-          userCreated: user
-        });
-      }
-    });
-  })
+  UserController.user_signup
 );
 
 // TODO: check headers errors
 router.post(
   "/login",
-  catchException(async (req, res) => {
-    const { email, password } = req.body;
-    // Chequeo si el usuario existe antes de continuar
-    const user = await userService.checkIfUserExist(email);
-    // Si no existe === []
-    if (user.length === 0) {
-      res.status(401).json({ message: 'Autenticacion fallida' });
-    }
-
-    // Verifico su contraseña
-    bcrypt.compare(password, user[0].password, (err, result) => {
-      if (err) {
-        return res.status(401).json({ message: 'Autenticacion fallida' });
-      } 
-      if (result) {
-        const token = jwt.sign(
-          {
-            email: user[0].email,
-            userId: user[0]._id
-          }, 
-          process.env.JWT_KEY,
-          { expiresIn: "1h"},
-        );
-        return res.status(200).json({
-          message: "Autenticacion exitosa",
-          token: token
-        });
-      }
-      res.status(401).json({ message: 'Autenticacion fallida' });
-    });
-  })
+  UserController.user_login
 );
 
 // PUT
@@ -116,12 +44,7 @@ router.post(
 router.put(
   "/:userId",
   checkAuth,
-  catchException(async (req, res) => {
-    const { userId } = req.params;
-    const { email, password } = req.body;
-    const user = await userService.updateUser(userId,email,password);
-    res.json(user);
-  })
+  UserController.user_update_by_id
 );
 
 // DELETE (Soft)
@@ -129,11 +52,7 @@ router.put(
 router.delete(
   "/:userId",
   checkAuth,
-  catchException(async (req, res) => {
-    const { userId } = req.params;
-    const user = await userService.deleteUser(userId);
-    res.json(user);
-  })
+  UserController.user_soft_delete
 );
 
 module.exports = router;
