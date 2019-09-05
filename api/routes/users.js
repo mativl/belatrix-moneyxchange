@@ -41,10 +41,10 @@ router.get(
 // POST
 
 router.post(
-  "/",
+  "/signup",
   catchException(async (req, res) => {
-    const { firstName, lastName } = req.body;
-    const user = await userService.createUser(firstName, lastName);
+    const { email, password } = req.body;
+    const user = await userService.createUser(email, password);
     res.json({
       message: "Usuario creado exitosamente",
       userCreated: user
@@ -55,14 +55,14 @@ router.post(
 // PUT
 
 /**
- * Unicamente tengo permitido actualizar firstName y lastName
+ * Unicamente tengo permitido actualizar email y password
  */
 router.put(
   "/:userId",
   catchException(async (req, res) => {
     const { userId } = req.params;
-    const { firstName, lastName } = req.body;
-    const user = await userService.updateUser(userId,firstName,lastName);
+    const { email, password } = req.body;
+    const user = await userService.updateUser(userId,email,password);
     res.json(user);
   })
 );

@@ -9,8 +9,8 @@ class UserService {
     this._extractFields = this._extractFields.bind(this);
   }
 
-  createUser(firstName, lastName) {
-    const user = new this.UserModel({ firstName, lastName });
+  createUser(email, password) {
+    const user = new this.UserModel({ email, password });
     return user.save();
   }
 
@@ -33,10 +33,10 @@ class UserService {
     return this._extractFields(user, fields);
   }
 
-  async updateUser(userId, firstName, lastName) {
+  async updateUser(userId, email, password) {
     const user = await this.UserModel.findById(userId);
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
+    if (email) user.email = email;
+    if (password) user.password = password;
     return user.save();
   }
 
