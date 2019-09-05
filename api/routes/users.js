@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { userService } = require("../services");
 const catchException = require("../middlewares/catchExceptions");
 const ErrorWithStatusCode = require("../errors/ErrorWithStatusCode");
@@ -68,6 +69,7 @@ router.post(
   })
 );
 
+// TODO: check headers errors
 router.post(
   "/login",
   catchException(async (req, res) => {
@@ -85,8 +87,17 @@ router.post(
         return res.status(401).json({ message: 'Autenticacion fallida' });
       } 
       if (result) {
+        const token = jwt.sign(
+          {
+            email: user[0].email,
+            userId: user[0]._id
+          }, 
+          process.env.JWT_KEY,
+          { expiresIn: "1h"},
+        );
         return res.status(200).json({
           message: "Autenticacion exitosa",
+          token: token
         });
       }
       res.status(401).json({ message: 'Autenticacion fallida' });
