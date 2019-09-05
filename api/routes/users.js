@@ -44,7 +44,7 @@ router.get(
 router.post(
   "/signup",
   catchException(async (req, res) => {
-    const { email } = req.body;
+    const { email, password } = req.body;
     // Chequeo si el usuario existe antes de continuar
     const userExist = await userService.checkIfUserExist(email);
     // Si no existe === []
@@ -52,7 +52,6 @@ router.post(
       return res.status(409).json({ message: 'Email en uso' });
     }
 
-    let { password } = req.body;
     bcrypt.hash(password, 10, async (err, hash) => {
       if (err) {
         return res.status(500).json({
@@ -65,6 +64,32 @@ router.post(
           userCreated: user
         });
       }
+    });
+  })
+);
+
+router.post(
+  "/login",
+  catchException(async (req, res) => {
+    const { email, password } = req.body;
+    // Chequeo si el usuario existe antes de continuar
+    const user = await userService.checkIfUserExist(email);
+    // Si no existe === []
+    if (user.length === 0) {
+      res.status(401).json({ message: 'Autenticacion fallida' });
+    }
+
+    // Verifico su contraseña
+    bcrypt.compare(password, user[0].password, (err, result) => {
+      if (err) {
+        return res.status(401).json({ message: 'Autenticacion fallida' });
+      } 
+      if (result) {
+        return res.status(200).json({
+          message: "Autenticacion exitosa",
+        });
+      }
+      res.status(401).json({ message: 'Autenticacion fallida' });
     });
   })
 );
