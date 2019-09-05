@@ -30,7 +30,11 @@ router.get(
   catchException(async (req, res) => {
     const { userId } = req.params;
     const user = await userService.getUser(userId);
-    res.json(user);
+    if (user) {
+      res.json(user);
+    } else{
+      res.status(404).json({ message: 'No se encontro un usuario con ese ID' });
+    }
   })
 );
 
