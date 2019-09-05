@@ -25,7 +25,7 @@ router.get(
   })
 );
 
-// // POST
+// POST
 
 router.post(
   "/",
@@ -36,6 +36,32 @@ router.post(
       message: "Usuario creado exitosamente",
       userCreated: user
     });
+  })
+);
+
+// PUT
+
+/**
+ * Unicamente tengo permitido actualizar firstName y lastName
+ */
+router.put(
+  "/:userId",
+  catchException(async (req, res) => {
+    const { userId } = req.params;
+    const { firstName, lastName } = req.body;
+    const user = await userService.updateUser(userId,firstName,lastName);
+    res.json(user);
+  })
+);
+
+// DELETE (Soft)
+
+router.delete(
+  "/:userId",
+  catchException(async (req, res) => {
+    const { userId } = req.params;
+    const user = await userService.deleteUser(userId);
+    res.json(user);
   })
 );
 
