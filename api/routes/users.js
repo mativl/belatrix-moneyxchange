@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const { userService } = require("../services");
 const catchException = require("../middlewares/catchExceptions");
 const ErrorWithStatusCode = require("../errors/ErrorWithStatusCode");
@@ -42,12 +43,21 @@ router.get(
 
 router.post(
   "/signup",
-  catchException(async (req, res) => {
-    const { email, password } = req.body;
-    const user = await userService.createUser(email, password);
-    res.json({
-      message: "Usuario creado exitosamente",
-      userCreated: user
+  catchException((req, res) => {
+    const { email } = req.body;
+    let { password } = req.body;
+    bcrypt.hash(password, 10, async (err, hash) => {
+      if (err) {
+        return res.status(500).json({
+          error: err
+        });
+      } else {
+        const user = await userService.createUser(email, hash);
+        res.json({
+          message: "Usuario creado exitosamente",
+          userCreated: user
+        });
+      }
     });
   })
 );
