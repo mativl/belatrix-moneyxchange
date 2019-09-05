@@ -43,8 +43,15 @@ router.get(
 
 router.post(
   "/signup",
-  catchException((req, res) => {
+  catchException(async (req, res) => {
     const { email } = req.body;
+    // Chequeo si el usuario existe antes de continuar
+    const userExist = await userService.checkIfUserExist(email);
+    // Si no existe === []
+    if (userExist.length > 0) {
+      return res.status(409).json({ message: 'Email en uso' });
+    }
+
     let { password } = req.body;
     bcrypt.hash(password, 10, async (err, hash) => {
       if (err) {

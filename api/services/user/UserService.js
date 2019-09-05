@@ -33,6 +33,11 @@ class UserService {
     return this._extractFields(user, fields);
   }
 
+  async checkIfUserExist(email) {
+    const user = await this.UserModel.find({ email: email });
+    return user;
+  }
+
   async updateUser(userId, email, password) {
     const user = await this.UserModel.findById(userId);
     if (email) user.email = email;
