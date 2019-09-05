@@ -25,6 +25,15 @@ router.get(
   })
 );
 
+router.get(
+  "/:userId",
+  catchException(async (req, res) => {
+    const { userId } = req.params;
+    const user = await userService.getUser(userId);
+    res.json(user);
+  })
+);
+
 // POST
 
 router.post(
