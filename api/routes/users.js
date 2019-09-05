@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { userService } = require("../services");
 const catchException = require("../middlewares/catchExceptions");
+const checkAuth = require("../middlewares/check-auth");
 const ErrorWithStatusCode = require("../errors/ErrorWithStatusCode");
 
 const router = express.Router();
@@ -16,6 +17,7 @@ const router = express.Router();
  */
 router.get(
   "/",
+  checkAuth,
   catchException(async (req, res) => {
     let { offset, limit, fields } = req.query;
     offset = parseInt(offset);
@@ -29,6 +31,7 @@ router.get(
 
 router.get(
   "/:userId",
+  checkAuth,
   catchException(async (req, res) => {
     const { userId } = req.params;
     const user = await userService.getUser(userId);
@@ -112,6 +115,7 @@ router.post(
  */
 router.put(
   "/:userId",
+  checkAuth,
   catchException(async (req, res) => {
     const { userId } = req.params;
     const { email, password } = req.body;
@@ -124,6 +128,7 @@ router.put(
 
 router.delete(
   "/:userId",
+  checkAuth,
   catchException(async (req, res) => {
     const { userId } = req.params;
     const user = await userService.deleteUser(userId);
