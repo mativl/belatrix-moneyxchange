@@ -1,5 +1,9 @@
 const http = require('http');
 const app = require('./app');
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost:27017/rest",{ useNewUrlParser: true });
+
 
 const port = process.env.PORT || 5000;
 
