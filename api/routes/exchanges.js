@@ -1,6 +1,6 @@
 const express = require('express');
 const checkAuth = require("../middlewares/check-auth");
-const UserController = require("../controllers/userController");
+const ExchangeController = require("../controllers/exchangeController");
 
 const router = express.Router();
 
@@ -14,45 +14,13 @@ const router = express.Router();
 router.get(
   "/",
   checkAuth,
-  UserController.user_get_all
+  ExchangeController.exchange_get_all
 );
 
 router.get(
-  "/:userId",
+  "/:exchangeId",
   checkAuth,
-  UserController.user_get_by_id
-);
-
-// POST
-
-router.post(
-  "/signup",
-  UserController.user_signup
-);
-
-// TODO: check headers errors
-router.post(
-  "/login",
-  UserController.user_login
-);
-
-// PUT
-
-/**
- * Unicamente tengo permitido actualizar email y password
- */
-router.put(
-  "/:userId",
-  checkAuth,
-  UserController.user_update_by_id
-);
-
-// DELETE (Soft)
-
-router.delete(
-  "/:userId",
-  checkAuth,
-  UserController.user_soft_delete
+  ExchangeController.exchange_get_by_id
 );
 
 module.exports = router;

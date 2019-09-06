@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const exchangeSchema = new Schema({
-  email: { 
+  base: { 
     type: String, 
     required: true, 
     unique: true
-    // match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
   },
-  password: { type: String, required: true },
-  deleted: { type: Boolean, default: false }
+  rates: Schema.Types.Mixed,
+  date: { type: Date },
 });
 
-module.exports = mongoose.model("exchange", exchange);
+module.exports = mongoose.model("exchange", exchangeSchema);

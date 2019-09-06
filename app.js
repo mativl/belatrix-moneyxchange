@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 const usersRoutes = require("./api/routes/users");
+const exchangesRoutes = require("./api/routes/exchanges");
 
 // Middlewares
 app.use(morgan('dev'));
@@ -19,8 +20,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Rutas
+// Registro de Rutas
 app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/exchanges', exchangesRoutes);
 
 // Manejo de errores de rutas inexistentes
 app.use((req, res, next) => {
