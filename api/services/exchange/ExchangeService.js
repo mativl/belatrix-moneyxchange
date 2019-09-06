@@ -34,6 +34,26 @@ class ExchangeService {
 
     return result;
   }
+  
+  async checkIfExchangeExist(base) {
+    const exchange = await this.ExchangeModel.find({ base: base });
+    return exchange;
+  }
+
+  createExchange(base, rates, date) {
+    const exchange = new this.ExchangeModel({ base, rates, date });
+    return exchange.save();
+  }
+
+  /**
+   * Solo se puede actualizar Rates y Date
+  */
+  async updateExchange(exchangeId, rates, date) {
+    const exchange = await this.ExchangeModel.findById(exchangeId);
+    if (rates) exchange.rates = rates;
+    if (date) exchange.date = date;
+    return exchange.save();
+  }
 }
 
 module.exports = ExchangeService;
