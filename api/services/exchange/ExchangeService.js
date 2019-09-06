@@ -36,7 +36,7 @@ class ExchangeService {
   }
   
   async checkIfExchangeExist(base) {
-    const exchange = await this.ExchangeModel.find({ base: base });
+    const exchange = await this.ExchangeModel.find({ base: base }).select('_id');;
     return exchange;
   }
 
@@ -52,6 +52,9 @@ class ExchangeService {
     const exchange = await this.ExchangeModel.findById(exchangeId);
     if (rates) exchange.rates = rates;
     if (date) exchange.date = date;
+    const now = new Date();
+    exchange.lastUpdate = now;
+
     return exchange.save();
   }
 }

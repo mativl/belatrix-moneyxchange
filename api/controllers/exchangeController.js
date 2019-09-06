@@ -29,16 +29,17 @@ exports.exchange_get_by_base = catchException(async (req, res) => {
 });
 
 
+
 exports.cronExchange = async (data) => {
   const { base, date, rates } = data;
-  const exchangeExist = await exchangeService.checkIfExchangeExist(base);
+  const exchangeId = await exchangeService.checkIfExchangeExist(base);
   const now = new Date();
   // Si no existe === []
-  if (exchangeExist.length === 0) {
+  if (exchangeId.length === 0) {
     const exchange = await exchangeService.createExchange(base, rates, date);
     console.log(`Se creo el Exchange ${base} a las ${now}`);
   } else{
-    const exchange = await exchangeService.updateExchange(exchangeExist._id, rates, date);
+    const exchange = await exchangeService.updateExchange(exchangeId[0]['_id'], rates, date);
     console.log(`Se actualizo el Exchange ${base} a las ${now}`);
   }
 };

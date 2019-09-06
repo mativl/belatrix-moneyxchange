@@ -9,6 +9,7 @@ const exchangeSchema = new Schema({
   },
   rates: Schema.Types.Mixed,
   date: { type: Date },
+  lastUpdate: { type: Date, default: new Date() },
 });
 
 module.exports = mongoose.model("exchange", exchangeSchema);
