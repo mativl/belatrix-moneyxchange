@@ -27,3 +27,18 @@ exports.exchange_get_by_base = catchException(async (req, res) => {
     res.status(404).json({ message: 'No se encontro la moneda con ese Codigo' });
   }
 });
+
+
+exports.cronExchange = async (data) => {
+  const { base, date, rates } = data;
+  const exchangeExist = await exchangeService.checkIfExchangeExist(base);
+  const now = new Date();
+  // Si no existe === []
+  if (exchangeExist.length === 0) {
+    const exchange = await exchangeService.createExchange(base, rates, date);
+    console.log(`Se creo el Exchange ${base} a las ${now}`);
+  } else{
+    const exchange = await exchangeService.updateExchange(exchangeExist._id, rates, date);
+    console.log(`Se actualizo el Exchange ${base} a las ${now}`);
+  }
+};

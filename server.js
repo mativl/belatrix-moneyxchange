@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
 const mongoose = require("mongoose");
+const cronJobs = require("./api/cronJobs/updateUSD");
 
 mongoose.connect("mongodb://localhost:27017/rest",{ useNewUrlParser: true });
 
