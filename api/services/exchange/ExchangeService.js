@@ -7,7 +7,7 @@ class ExchangeService {
   }
 
   async listExchanges(offset = 0, limit = 0, fields = []) {
-    const exchanges = await this.ExchangeModel.find({ deleted: false }, null, {
+    const exchanges = await this.ExchangeModel.find({}, null, {
       skip: offset,
       limit
     });
@@ -20,8 +20,8 @@ class ExchangeService {
     });
   }
 
-  async getExchange(exchangeId, fields = []) {
-    const exchange = await this.ExchangeModel.findOne({ _id: exchangeId, deleted: false });
+  async getExchange(base, fields = []) {
+    const exchange = await this.ExchangeModel.findOne({ base: base });
     return this._extractFields(exchange, fields);
   }
 

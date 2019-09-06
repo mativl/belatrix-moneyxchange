@@ -18,12 +18,12 @@ exports.exchange_get_all = catchException(async (req, res) => {
   res.json(exchanges);
 });
 
-exports.exchange_get_by_id = catchException(async (req, res) => {
-  const { exchangeId } = req.params;
-  const exchange = await exchangeService.getExchange(exchangeId);
+exports.exchange_get_by_base = catchException(async (req, res) => {
+  const { base } = req.params;
+  const exchange = await exchangeService.getExchange(base);
   if (exchange) {
     res.json(exchange);
   } else{
-    res.status(404).json({ message: 'No se encontro la moneda con ese ID' });
+    res.status(404).json({ message: 'No se encontro la moneda con ese Codigo' });
   }
 });

@@ -18,9 +18,9 @@ router.get(
 );
 
 router.get(
-  "/:exchangeId",
+  "/:base",
   checkAuth,
-  ExchangeController.exchange_get_by_id
+  ExchangeController.exchange_get_by_base
 );
 
 module.exports = router;
